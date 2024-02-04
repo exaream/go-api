@@ -2,29 +2,42 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 
-	"github.com/exaream/go-api/handlers"
+	"github.com/exaream/go-api/api"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	ctx := context.Background()
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /article/list", handlers.GetArticleListHandler)
-	mux.HandleFunc("GET /article/{id}", handlers.GetArticleDetailHandler)
-	mux.HandleFunc("POST /article", handlers.PostArticleHandler)
-	mux.HandleFunc("POST /article/nice", handlers.PostNiceHandler)
-	mux.HandleFunc("POST /comment", handlers.PostCommentHandler)
-
-	port := os.Getenv("HTTP_PORT")
-	logger.InfoContext(ctx, "starting server", slog.String("port", port))
-
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	db, err := getDB()
+	if err != nil {
 		logger.ErrorContext(ctx, err.Error())
 		os.Exit(1)
 	}
+
+	router := api.NewRouter(db, logger)
+
+	logger.InfoContext(ctx, "starting server")
+	if err := http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), router); err != nil {
+		logger.ErrorContext(ctx, err.Error())
+		os.Exit(1)
+	}
+}
+
+func getDB() (*sql.DB, error) {
+	src := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true",
+		os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_NAME"))
+
+	db, err := sql.Open("mysql", src)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
