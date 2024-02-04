@@ -15,11 +15,11 @@ func main() {
 	ctx := context.Background()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /article/list/{$}", handlers.GetArticleListHandler)
-	mux.HandleFunc("GET /article/{id}/{$}", handlers.GetArticleDetailHandler)
-	mux.HandleFunc("POST /article/{$}", handlers.PostArticleHandler)
-	mux.HandleFunc("POST /article/nice/{$}", handlers.PostNiceHandler)
-	mux.HandleFunc("POST /comment/{$}", handlers.PostCommentHandler)
+	mux.HandleFunc("GET /article/list", handlers.GetArticleListHandler)
+	mux.HandleFunc("GET /article/{id}", handlers.GetArticleDetailHandler)
+	mux.HandleFunc("POST /article", handlers.PostArticleHandler)
+	mux.HandleFunc("POST /article/nice", handlers.PostNiceHandler)
+	mux.HandleFunc("POST /comment", handlers.PostCommentHandler)
 
 	logger.InfoContext(ctx, "starting server", slog.String("port", port))
 
