@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	port := "8080" // TODO: Get from environment variable
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	ctx := context.Background()
 
@@ -21,6 +20,7 @@ func main() {
 	mux.HandleFunc("POST /article/nice", handlers.PostNiceHandler)
 	mux.HandleFunc("POST /comment", handlers.PostCommentHandler)
 
+	port := os.Getenv("HTTP_PORT")
 	logger.InfoContext(ctx, "starting server", slog.String("port", port))
 
 	if err := http.ListenAndServe(":"+port, mux); err != nil {

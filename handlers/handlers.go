@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/exaream/go-api/models"
+	"github.com/exaream/go-api/services"
 )
 
 func GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +20,12 @@ func GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(page)
 
-	articleList := []models.Article{models.Article1, models.Article2}
+	articleList, err := services.GetArticleList(page)
+	if err != nil {
+		http.Error(w, "failed to get article list", http.StatusInternalServerError)
+		return
+	}
+
 	json.NewEncoder(w).Encode(articleList)
 }
 
@@ -34,44 +39,69 @@ func getPage(r *http.Request) (int, error) {
 }
 
 func GetArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	if !regexp.MustCompile(`\d+`).MatchString(id) {
+	tmpID := r.PathValue("id")
+	if !regexp.MustCompile(`\d+`).MatchString(tmpID) {
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
 
-	article := models.Article1
+	id, err := strconv.Atoi(tmpID)
+	if err != nil {
+		http.Error(w, "failed to convert id", http.StatusBadRequest)
+		return
+	}
+
+	article, err := services.GetArticleDetail(id)
+	if err != nil {
+		http.Error(w, "failed to get article", http.StatusInternalServerError)
+		return
+	}
+
 	json.NewEncoder(w).Encode(article)
 }
 
 func PostArticleHandler(w http.ResponseWriter, r *http.Request) {
-	var article models.Article
-	if err := json.NewDecoder(r.Body).Decode(&article); err != nil {
+	var reqArticle models.Article
+	if err := json.NewDecoder(r.Body).Decode(&reqArticle); err != nil {
 		http.Error(w, "failed to decode json", http.StatusBadRequest)
 		return
 	}
 
-	article.CreatedAt = time.Now()
-	article.UpdatedAt = time.Now()
+	article, err := services.PostArticle(&reqArticle)
+	if err != nil {
+		http.Error(w, "failed to post article", http.StatusInternalServerError)
+		return
+	}
 
 	json.NewEncoder(w).Encode(article)
 }
 
 func PostNiceHandler(w http.ResponseWriter, r *http.Request) {
-	var article models.Article
-	if err := json.NewDecoder(r.Body).Decode(&article); err != nil {
+	var reqArticle models.Article
+	if err := json.NewDecoder(r.Body).Decode(&reqArticle); err != nil {
 		http.Error(w, "failed to decode json", http.StatusBadRequest)
 		return
 	}
 
-	article.NiceNum++
+	article, err := services.PostNice(&reqArticle)
+	if err != nil {
+		http.Error(w, "failed to post nice", http.StatusInternalServerError)
+		return
+	}
+
 	json.NewEncoder(w).Encode(article)
 }
 
 func PostCommentHandler(w http.ResponseWriter, r *http.Request) {
-	var comment models.Comment
-	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
+	var reqComment models.Comment
+	if err := json.NewDecoder(r.Body).Decode(&reqComment); err != nil {
 		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		return
+	}
+
+	comment, err := services.PostComment(&reqComment)
+	if err != nil {
+		http.Error(w, "failed to post comment", http.StatusInternalServerError)
 		return
 	}
 
