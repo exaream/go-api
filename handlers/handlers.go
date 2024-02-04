@@ -1,11 +1,14 @@
 package handlers
 
 import (
-	"fmt"
-	"io"
+	"encoding/json"
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
+
+	"github.com/exaream/go-api/models"
 )
 
 func GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +18,10 @@ func GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.WriteString(w, fmt.Sprintf("get article list: page=%d\n", page))
+	log.Println(page)
+
+	articleList := []models.Article{models.Article1, models.Article2}
+	json.NewEncoder(w).Encode(articleList)
 }
 
 func getPage(r *http.Request) (int, error) {
@@ -34,17 +40,40 @@ func GetArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.WriteString(w, fmt.Sprintf("get article detail: id=%s\n", id))
+	article := models.Article1
+	json.NewEncoder(w).Encode(article)
 }
 
 func PostArticleHandler(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "post article\n")
+	var article models.Article
+	if err := json.NewDecoder(r.Body).Decode(&article); err != nil {
+		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		return
+	}
+
+	article.CreatedAt = time.Now()
+	article.UpdatedAt = time.Now()
+
+	json.NewEncoder(w).Encode(article)
 }
 
 func PostNiceHandler(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "post nice\n")
+	var article models.Article
+	if err := json.NewDecoder(r.Body).Decode(&article); err != nil {
+		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		return
+	}
+
+	article.NiceNum++
+	json.NewEncoder(w).Encode(article)
 }
 
 func PostCommentHandler(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "post comment\n")
+	var comment models.Comment
+	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
+		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(comment)
 }
