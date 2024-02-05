@@ -13,8 +13,10 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	opt := &slog.HandlerOptions{Level: slog.LevelDebug}
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, opt))
 	ctx := context.Background()
+
 	db, err := getDB()
 	if err != nil {
 		logger.ErrorContext(ctx, err.Error())
