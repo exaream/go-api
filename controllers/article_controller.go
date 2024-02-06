@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"regexp"
 	"strconv"
 
+	"github.com/exaream/go-api/apperrors"
 	"github.com/exaream/go-api/controllers/services"
 	"github.com/exaream/go-api/models"
 )
@@ -22,15 +22,14 @@ func NewArticleController(s services.ArticleServicer) *ArticleController {
 func (c *ArticleController) GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
 	page, err := getPage(r)
 	if err != nil {
-		http.Error(w, "invalid page", http.StatusBadRequest)
+		err = apperrors.BadParam.Wrap(err, "page must be number")
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
-	log.Println(page)
-
 	articleList, err := c.service.GetArticleList(page)
 	if err != nil {
-		http.Error(w, "failed to get article list", http.StatusInternalServerError)
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
@@ -49,19 +48,21 @@ func getPage(r *http.Request) (int, error) {
 func (c *ArticleController) GetArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
 	tmpID := r.PathValue("id")
 	if !regexp.MustCompile(`\d+`).MatchString(tmpID) {
-		http.Error(w, "invalid id", http.StatusBadRequest)
+		err := apperrors.BadParam.Wrap(nil, "id must be number")
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
 	id, err := strconv.Atoi(tmpID)
 	if err != nil {
-		http.Error(w, "failed to convert id", http.StatusBadRequest)
+		err := apperrors.BadParam.Wrap(nil, "failed to convert id")
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
 	article, err := c.service.GetArticleDetail(id)
 	if err != nil {
-		http.Error(w, "failed to get article", http.StatusInternalServerError)
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
@@ -72,13 +73,14 @@ func (c *ArticleController) PostArticleHandler(w http.ResponseWriter, r *http.Re
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
-		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		err = apperrors.ReqBodyDecodeFailed.Wrap(err, "failed to decode request body")
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
 	article, err := c.service.PostArticle(reqArticle)
 	if err != nil {
-		http.Error(w, "failed to post article", http.StatusInternalServerError)
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
@@ -89,13 +91,13 @@ func (c *ArticleController) PostNiceHandler(w http.ResponseWriter, r *http.Reque
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
-		http.Error(w, "failed to decode json", http.StatusBadRequest)
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 
 	article, err := c.service.PostNice(reqArticle)
 	if err != nil {
-		http.Error(w, "failed to post nice", http.StatusInternalServerError)
+		apperrors.ErrorHandler(w, r, err)
 		return
 	}
 

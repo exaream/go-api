@@ -44,7 +44,7 @@ func SelectArticleList(db *sql.DB, page int) ([]*models.Article, error) {
 		return nil, err
 	}
 
-	articles := make([]*models.Article, 0)
+	list := make([]*models.Article, 0)
 	for rows.Next() {
 		var (
 			article   models.Article
@@ -59,10 +59,10 @@ func SelectArticleList(db *sql.DB, page int) ([]*models.Article, error) {
 
 		article.CreatedAt = createdAt.Time
 		article.UpdatedAt = updatedAt.Time
-		articles = append(articles, &article)
+		list = append(list, &article)
 	}
 
-	return articles, nil
+	return list, nil
 }
 
 func SelectArticleDetail(db *sql.DB, id int) (*models.Article, error) {
@@ -128,8 +128,9 @@ func UpdateNiceNum(db *sql.DB, id int) (*models.Article, error) {
 		WHERE id = ?;
 	`
 
-	now := time.Now()
-	_, err = tx.Exec(queryUpdate, article.NiceNum+1, now, id)
+	article.UpdatedAt = time.Now()
+	article.NiceNum = article.NiceNum + 1
+	_, err = tx.Exec(queryUpdate, article.NiceNum, article.UpdatedAt, id)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
@@ -139,6 +140,5 @@ func UpdateNiceNum(db *sql.DB, id int) (*models.Article, error) {
 		return nil, err
 	}
 
-	article.UpdatedAt = now
 	return &article, nil
 }
