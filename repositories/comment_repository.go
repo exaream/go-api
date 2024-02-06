@@ -40,7 +40,7 @@ func SelectCommentList(db *sql.DB, articleID int) ([]*models.Comment, error) {
 		return nil, err
 	}
 
-	comments := make([]*models.Comment, 0)
+	list := make([]*models.Comment, 0)
 	for rows.Next() {
 		var (
 			comment   models.Comment
@@ -53,8 +53,8 @@ func SelectCommentList(db *sql.DB, articleID int) ([]*models.Comment, error) {
 			return nil, err
 		}
 
-		comments = append(comments, &comment)
+		list = append(list, &comment)
 	}
 
-	return comments, nil
+	return list, nil
 }
