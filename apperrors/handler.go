@@ -16,16 +16,6 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
 		}
 	}
 
-	var statusCode int
-	switch appErr.ErrCode {
-	case NAData, BadParam:
-		statusCode = http.StatusNotFound
-	case NoTargetData, ReqBodyDecodeFailed:
-		statusCode = http.StatusBadRequest
-	default:
-		statusCode = http.StatusInternalServerError
-	}
-
-	w.WriteHeader(statusCode)
+	w.WriteHeader(appErr.ErrCode.HTTPStatusCode())
 	json.NewEncoder(w).Encode(appErr)
 }

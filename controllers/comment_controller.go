@@ -20,7 +20,7 @@ func NewCommentController(s services.CommentServicer) *CommentController {
 func (c *CommentController) PostCommentHandler(w http.ResponseWriter, r *http.Request) {
 	var reqComment *models.Comment
 	if err := json.NewDecoder(r.Body).Decode(&reqComment); err != nil {
-		err = apperrors.ReqBodyDecodeFailed.Wrap(err, "failed to decode request body")
+		err = apperrors.FailedToDecodeReq.Wrap(err, "failed to decode request body")
 		apperrors.ErrorHandler(w, r, err)
 		return
 	}
