@@ -1,18 +1,23 @@
 package apperrors
 
+import "net/http"
+
 type ErrCode string
 
 const (
 	Unknown ErrCode = "U000"
 
-	InsertDataFailed ErrCode = "S001"
-	GetDataFailed    ErrCode = "S002"
-	NAData           ErrCode = "S003" // TODO: when selecting
-	NoTargetData     ErrCode = "S004" // TODO: when updating or deleting
-	UpdateDataFailed ErrCode = "S005"
+	FailedToInsert   ErrCode = "S001"
+	FailedToSelect   ErrCode = "S002"
+	FailedToUpdate   ErrCode = "S003"
+	FailedToDelete   ErrCode = "S004"
+	NotFound         ErrCode = "S005"
+	NotFoundToUpdate ErrCode = "S006"
+	AlreadyUpdated   ErrCode = "S007"
+	AlreadyDeleted   ErrCode = "S008"
 
-	ReqBodyDecodeFailed ErrCode = "R001"
-	BadParam            ErrCode = "R002"
+	FailedToDecodeReq ErrCode = "R001"
+	BadParam          ErrCode = "R002"
 )
 
 func (code ErrCode) Wrap(err error, msg string) *AppError {
@@ -20,5 +25,20 @@ func (code ErrCode) Wrap(err error, msg string) *AppError {
 		ErrCode: code,
 		Message: msg,
 		Err:     err,
+	}
+}
+
+func (code ErrCode) HTTPStatusCode() int {
+	switch code {
+	case BadParam:
+		return http.StatusBadRequest
+	case NotFound:
+		return http.StatusNotFound
+	case NotFoundToUpdate, FailedToDecodeReq:
+		return http.StatusBadRequest
+	case AlreadyUpdated, AlreadyDeleted:
+		return http.StatusConflict
+	default:
+		return http.StatusInternalServerError
 	}
 }

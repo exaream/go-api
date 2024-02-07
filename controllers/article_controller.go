@@ -73,7 +73,7 @@ func (c *ArticleController) PostArticleHandler(w http.ResponseWriter, r *http.Re
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
-		err = apperrors.ReqBodyDecodeFailed.Wrap(err, "failed to decode request body")
+		err = apperrors.FailedToDecodeReq.Wrap(err, "failed to decode request body")
 		apperrors.ErrorHandler(w, r, err)
 		return
 	}
