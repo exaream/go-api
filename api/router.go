@@ -13,21 +13,19 @@ import (
 func NewRouter(db *sql.DB, logger *slog.Logger) *http.ServeMux {
 	srv := services.NewAppService(db, logger)
 	mux := http.NewServeMux()
-	handleArticle(mux, srv)
-	handleComment(mux, srv)
+	handleArticle(mux, controllers.NewArticleController(srv))
+	handleComment(mux, controllers.NewCommentController(srv))
 
 	return mux
 }
 
-func handleArticle(mux *http.ServeMux, srv *services.AppService) {
-	ctrl := controllers.NewArticleController(srv)
+func handleArticle(mux *http.ServeMux, ctrl *controllers.ArticleController) {
 	mux.HandleFunc("GET /article/list", middlewares.LoggingMiddleware(ctrl.GetArticleListHandler))
 	mux.HandleFunc("GET /article/{id}", middlewares.LoggingMiddleware(ctrl.GetArticleDetailHandler))
 	mux.HandleFunc("POST /article", middlewares.LoggingMiddleware(ctrl.PostArticleHandler))
 	mux.HandleFunc("POST /article/nice", middlewares.LoggingMiddleware(ctrl.PostNiceHandler))
 }
 
-func handleComment(mux *http.ServeMux, srv *services.AppService) {
-	ctrl := controllers.NewCommentController(srv)
+func handleComment(mux *http.ServeMux, ctrl *controllers.CommentController) {
 	mux.HandleFunc("POST /comment", middlewares.LoggingMiddleware(ctrl.PostCommentHandler))
 }
