@@ -1,6 +1,8 @@
 package services
 
-import "github.com/exaream/go-api/models"
+import (
+	"github.com/exaream/go-api/models"
+)
 
 type ArticleServicer interface {
 	GetArticleList(page int) ([]*models.Article, error)

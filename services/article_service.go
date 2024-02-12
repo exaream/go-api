@@ -16,7 +16,7 @@ func (s *AppService) GetArticleList(page int) ([]*models.Article, error) {
 	}
 
 	if len(list) == 0 {
-		return nil, apperrors.NotFound.Wrap(ErrNoData, "there is no article")
+		return nil, apperrors.NotFound.Wrap(ErrNotFound, "there is no article")
 	}
 
 	return list, nil

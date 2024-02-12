@@ -19,7 +19,7 @@ func NewArticleController(s services.ArticleServicer) *ArticleController {
 	return &ArticleController{service: s}
 }
 
-func (c *ArticleController) GetArticleListHandler(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) GetList(w http.ResponseWriter, r *http.Request) {
 	page, err := getPage(r)
 	if err != nil {
 		err = apperrors.BadParam.Wrap(err, "page must be number")
@@ -45,7 +45,7 @@ func getPage(r *http.Request) (int, error) {
 	return strconv.Atoi(tmp[0])
 }
 
-func (c *ArticleController) GetArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) GetDetail(w http.ResponseWriter, r *http.Request) {
 	tmpID := r.PathValue("id")
 	if !regexp.MustCompile(`\d+`).MatchString(tmpID) {
 		err := apperrors.BadParam.Wrap(nil, "id must be number")
@@ -69,7 +69,7 @@ func (c *ArticleController) GetArticleDetailHandler(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(article)
 }
 
-func (c *ArticleController) PostArticleHandler(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) Post(w http.ResponseWriter, r *http.Request) {
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
@@ -87,7 +87,7 @@ func (c *ArticleController) PostArticleHandler(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(article)
 }
 
-func (c *ArticleController) PostNiceHandler(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) PostNice(w http.ResponseWriter, r *http.Request) {
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
