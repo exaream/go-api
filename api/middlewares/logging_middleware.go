@@ -1,7 +1,8 @@
 package middlewares
 
 import (
-	"log"
+	"context"
+	"log/slog"
 	"net/http"
 )
 
@@ -19,11 +20,14 @@ func (rlw *responseLoggingWriter) WriteHeader(code int) {
 	rlw.ResponseWriter.WriteHeader(code)
 }
 
-func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func LoggingMiddleware(ctx context.Context, logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.Method, r.RequestURI)
+		logger.InfoContext(ctx, "starting logging middleware",
+			slog.String("http_method", r.Method), slog.String("request_uri", r.RequestURI))
+
 		rlw := NewResponseLoggingWriter(w)
 		next(rlw, r)
-		log.Println("status_code", rlw.code)
+
+		logger.InfoContext(ctx, "ending loggeing middleware", slog.Int("http_status_code", rlw.code))
 	}
 }

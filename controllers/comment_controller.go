@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/exaream/go-api/apperrors"
@@ -10,14 +12,20 @@ import (
 )
 
 type CommentController struct {
+	ctx     context.Context
+	logger  *slog.Logger
 	service services.CommentServicer
 }
 
-func NewCommentController(s services.CommentServicer) *CommentController {
-	return &CommentController{service: s}
+func NewCommentController(ctx context.Context, logger *slog.Logger, service services.CommentServicer) *CommentController {
+	return &CommentController{
+		ctx:     ctx,
+		logger:  logger,
+		service: service,
+	}
 }
 
-func (c *CommentController) Post(w http.ResponseWriter, r *http.Request) {
+func (c *CommentController) PostComment(w http.ResponseWriter, r *http.Request) {
 	var reqComment *models.Comment
 	if err := json.NewDecoder(r.Body).Decode(&reqComment); err != nil {
 		err = apperrors.FailedToDecodeReq.Wrap(err, "failed to decode request body")

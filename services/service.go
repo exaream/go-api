@@ -6,10 +6,13 @@ import (
 )
 
 type AppService struct {
-	db     *sql.DB
 	logger *slog.Logger
+	db     *sql.DB
 }
 
-func NewAppService(db *sql.DB, logger *slog.Logger) *AppService {
-	return &AppService{db: db, logger: logger}
+func NewAppService(logger *slog.Logger, db *sql.DB) *AppService {
+	return &AppService{
+		logger: logger,
+		db:     db,
+	}
 }

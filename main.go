@@ -23,7 +23,7 @@ func main() {
 
 	logger.InfoContext(ctx, "starting server")
 
-	router := api.NewRouter(db, logger)
+	router := api.NewRouter(ctx, logger, db)
 	if err := http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), router); err != nil {
 		logger.ErrorContext(ctx, err.Error())
 		os.Exit(1)
