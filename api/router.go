@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
 	"net/http"
@@ -10,18 +11,18 @@ import (
 	"github.com/exaream/go-api/services"
 )
 
-func NewRouter(db *sql.DB, logger *slog.Logger) *http.ServeMux {
-	srv := services.NewAppService(db, logger)
-	articleCtrl := controllers.NewArticleController(srv)
-	commentCtrl := controllers.NewCommentController(srv)
+func NewRouter(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {
+	srv := services.NewAppService(logger, db)
+	articleCtrl := controllers.NewArticleController(ctx, logger, srv)
+	commentCtrl := controllers.NewCommentController(ctx, logger, srv)
 	mux := http.NewServeMux()
-	middlewareList := []func(http.HandlerFunc) http.HandlerFunc{middlewares.LoggingMiddleware}
+	middlewareList := []func(context.Context, *slog.Logger, http.HandlerFunc) http.HandlerFunc{middlewares.LoggingMiddleware}
 
-	mux.HandleFunc("GET /article/list", middlewares.Apply(articleCtrl.GetList, middlewareList))
-	mux.HandleFunc("GET /article/{id}", middlewares.Apply(articleCtrl.GetDetail, middlewareList))
-	mux.HandleFunc("POST /article", middlewares.Apply(articleCtrl.Post, middlewareList))
-	mux.HandleFunc("POST /article/nice", middlewares.Apply(articleCtrl.PostNice, middlewareList))
-	mux.HandleFunc("POST /comment", middlewares.Apply(commentCtrl.Post, middlewareList))
+	mux.HandleFunc("GET /article/list", middlewares.Apply(ctx, logger, articleCtrl.ListArticle, middlewareList))
+	mux.HandleFunc("GET /article/{id}", middlewares.Apply(ctx, logger, articleCtrl.GetArticle, middlewareList))
+	mux.HandleFunc("POST /article", middlewares.Apply(ctx, logger, articleCtrl.PostArticle, middlewareList))
+	mux.HandleFunc("POST /article/nice", middlewares.Apply(ctx, logger, articleCtrl.PostNice, middlewareList))
+	mux.HandleFunc("POST /comment", middlewares.Apply(ctx, logger, commentCtrl.PostComment, middlewareList))
 
 	return mux
 }

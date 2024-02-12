@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -12,14 +14,20 @@ import (
 )
 
 type ArticleController struct {
+	ctx     context.Context
+	logger  *slog.Logger
 	service services.ArticleServicer
 }
 
-func NewArticleController(s services.ArticleServicer) *ArticleController {
-	return &ArticleController{service: s}
+func NewArticleController(ctx context.Context, logger *slog.Logger, service services.ArticleServicer) *ArticleController {
+	return &ArticleController{
+		ctx:     ctx,
+		logger:  logger,
+		service: service,
+	}
 }
 
-func (c *ArticleController) GetList(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) ListArticle(w http.ResponseWriter, r *http.Request) {
 	page, err := getPage(r)
 	if err != nil {
 		err = apperrors.BadParam.Wrap(err, "page must be number")
@@ -27,8 +35,9 @@ func (c *ArticleController) GetList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	articleList, err := c.service.GetArticleList(page)
+	articleList, err := c.service.ListArticle(page)
 	if err != nil {
+		c.logger.ErrorContext(c.ctx, "GetList", slog.Int("page", page))
 		apperrors.ErrorHandler(w, r, err)
 		return
 	}
@@ -45,7 +54,7 @@ func getPage(r *http.Request) (int, error) {
 	return strconv.Atoi(tmp[0])
 }
 
-func (c *ArticleController) GetDetail(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) GetArticle(w http.ResponseWriter, r *http.Request) {
 	tmpID := r.PathValue("id")
 	if !regexp.MustCompile(`\d+`).MatchString(tmpID) {
 		err := apperrors.BadParam.Wrap(nil, "id must be number")
@@ -60,7 +69,7 @@ func (c *ArticleController) GetDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	article, err := c.service.GetArticleDetail(id)
+	article, err := c.service.GetArticle(id)
 	if err != nil {
 		apperrors.ErrorHandler(w, r, err)
 		return
@@ -69,7 +78,7 @@ func (c *ArticleController) GetDetail(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(article)
 }
 
-func (c *ArticleController) Post(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) PostArticle(w http.ResponseWriter, r *http.Request) {
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {

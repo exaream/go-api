@@ -9,7 +9,7 @@ import (
 	"github.com/exaream/go-api/repositories"
 )
 
-func (s *AppService) GetArticleList(page int) ([]*models.Article, error) {
+func (s *AppService) ListArticle(page int) ([]*models.Article, error) {
 	list, err := repositories.SelectArticleList(s.db, page)
 	if err != nil {
 		return nil, apperrors.FailedToSelect.Wrap(err, "failed to get article list")
@@ -22,7 +22,7 @@ func (s *AppService) GetArticleList(page int) ([]*models.Article, error) {
 	return list, nil
 }
 
-func (s *AppService) GetArticleDetail(articleID int) (*models.Article, error) {
+func (s *AppService) GetArticle(articleID int) (*models.Article, error) {
 	article, err := repositories.SelectArticleDetail(s.db, articleID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

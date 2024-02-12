@@ -5,8 +5,8 @@ import (
 )
 
 type ArticleServicer interface {
-	GetArticleList(page int) ([]*models.Article, error)
-	GetArticleDetail(id int) (*models.Article, error)
+	ListArticle(page int) ([]*models.Article, error)
+	GetArticle(id int) (*models.Article, error)
 	PostArticle(article *models.Article) (*models.Article, error)
 	PostNice(article *models.Article) (*models.Article, error)
 }
