@@ -15,13 +15,13 @@ func NewRouter(db *sql.DB, logger *slog.Logger) *http.ServeMux {
 	articleCtrl := controllers.NewArticleController(srv)
 	commentCtrl := controllers.NewCommentController(srv)
 	mux := http.NewServeMux()
-	middlewareList := []func(http.HandlerFunc) http.HandlerFunc{middlewares.Logging}
+	middlewareList := []func(http.HandlerFunc) http.HandlerFunc{middlewares.LoggingMiddleware}
 
-	mux.HandleFunc("GET /article/list", middlewares.Apply(articleCtrl.GetArticleListHandler, middlewareList))
-	mux.HandleFunc("GET /article/{id}", middlewares.Apply(articleCtrl.GetArticleDetailHandler, middlewareList))
-	mux.HandleFunc("POST /article", middlewares.Apply(articleCtrl.PostArticleHandler, middlewareList))
-	mux.HandleFunc("POST /article/nice", middlewares.Apply(articleCtrl.PostNiceHandler, middlewareList))
-	mux.HandleFunc("POST /comment", middlewares.Apply(commentCtrl.PostCommentHandler, middlewareList))
+	mux.HandleFunc("GET /article/list", middlewares.Apply(articleCtrl.GetList, middlewareList))
+	mux.HandleFunc("GET /article/{id}", middlewares.Apply(articleCtrl.GetDetail, middlewareList))
+	mux.HandleFunc("POST /article", middlewares.Apply(articleCtrl.Post, middlewareList))
+	mux.HandleFunc("POST /article/nice", middlewares.Apply(articleCtrl.PostNice, middlewareList))
+	mux.HandleFunc("POST /comment", middlewares.Apply(commentCtrl.Post, middlewareList))
 
 	return mux
 }
