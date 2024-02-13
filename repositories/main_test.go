@@ -14,15 +14,18 @@ import (
 
 const envPrefix = "TEST_"
 
+var testDB *sql.DB
+
 func TestMain(m *testing.M) {
-	db, err := setup()
+	var err error
+	testDB, err = setup()
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed to setup test: %w", err))
 	}
 
 	m.Run()
 
-	if err := teardown(db); err != nil {
+	if err := teardown(testDB); err != nil {
 		log.Fatalln(fmt.Errorf("failed to teardown test: %w", err))
 	}
 }
