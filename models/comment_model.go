@@ -11,9 +11,10 @@ type Comment struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewComment(id int, body, userName string, createdAt, updatedAt time.Time) *Comment {
+func NewComment(id, articleID int, body, userName string, createdAt, updatedAt time.Time) *Comment {
 	return &Comment{
 		ID:        id,
+		ArticleID: articleID,
 		Body:      body,
 		UserName:  userName,
 		CreatedAt: createdAt,
