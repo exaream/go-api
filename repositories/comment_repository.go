@@ -24,12 +24,12 @@ func InsertComment(db *sql.DB, comment *models.Comment) (*models.Comment, error)
 		return nil, err
 	}
 
-	return models.NewComment(int(id), comment.Body, comment.UserName, now, now), nil
+	return models.NewComment(int(id), comment.ArticleID, comment.Body, comment.UserName, now, now), nil
 }
 
 func SelectCommentList(db *sql.DB, articleID int) ([]*models.Comment, error) {
 	const query = `
-		SELECT id, body, user_name, created_at, updated_at
+		SELECT id, article_id, body, user_name, created_at, updated_at
 		FROM comments
 		WHERE article_id = ?
 		ORDER BY created_at;
@@ -48,7 +48,7 @@ func SelectCommentList(db *sql.DB, articleID int) ([]*models.Comment, error) {
 			updatedAt sql.NullTime
 		)
 
-		err := rows.Scan(&comment.ID, &comment.Body, &comment.UserName, &createdAt, &updatedAt)
+		err := rows.Scan(&comment.ID, &comment.ArticleID, &comment.Body, &comment.UserName, &createdAt, &updatedAt)
 		if err != nil {
 			return nil, err
 		}
