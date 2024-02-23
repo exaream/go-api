@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	opt := &slog.HandlerOptions{Level: slog.LevelDebug}
+	opt := &slog.HandlerOptions{Level: slog.LevelDebug} // AddSource: true
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, opt))
 	ctx := context.Background()
 

@@ -28,6 +28,10 @@ func (code ErrCode) Wrap(err error, msg string) *AppError {
 	}
 }
 
+func (code ErrCode) String() string {
+	return string(code)
+}
+
 func (code ErrCode) HTTPStatusCode() int {
 	switch code {
 	case BadParam:
