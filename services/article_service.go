@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/exaream/go-api/apperrors"
 	"github.com/exaream/go-api/models"
@@ -64,7 +65,7 @@ func (s *AppService) GetArticle(articleID int) (*models.Article, error) {
 
 	if articleErr != nil {
 		if errors.Is(articleErr, sql.ErrNoRows) {
-			return nil, apperrors.NotFound.Wrap(articleErr, "there is no target article")
+			return nil, apperrors.NotFound.Wrap(articleErr, fmt.Sprintf("not found article_id: %d", articleID))
 		}
 
 		return nil, apperrors.FailedToSelect.Wrap(articleErr, "failed to get article detail")
@@ -97,7 +98,7 @@ func (s *AppService) PostNice(article *models.Article) (*models.Article, error) 
 	article, err := repositories.UpdateNiceNum(s.db, article.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, apperrors.NotFoundToUpdate.Wrap(err, "there is no target article")
+			return nil, apperrors.NotFoundToUpdate.Wrap(err, fmt.Sprintf("not found article_id: %d", article.ID))
 		}
 
 		return nil, apperrors.FailedToUpdate.Wrap(err, "failed to update nice count")
