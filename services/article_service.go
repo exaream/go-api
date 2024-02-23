@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"sync"
 
 	"github.com/exaream/go-api/apperrors"
 	"github.com/exaream/go-api/models"
@@ -23,23 +24,47 @@ func (s *AppService) ListArticle(page int) ([]*models.Article, error) {
 }
 
 func (s *AppService) GetArticle(articleID int) (*models.Article, error) {
-	article, err := repositories.SelectArticleDetail(s.db, articleID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, apperrors.NotFound.Wrap(err, "there is no target article")
+	var (
+		article                    *models.Article
+		commentList                []*models.Comment
+		articleErr, commentErr     error
+		articleMutex, commentMutex sync.Mutex
+		wg                         sync.WaitGroup
+	)
+
+	wg.Add(2)
+
+	go func(db *sql.DB, articleID int) {
+		defer wg.Done()
+		articleMutex.Lock()
+		article, articleErr = repositories.SelectArticleDetail(db, articleID)
+		articleMutex.Unlock()
+	}(s.db, articleID)
+
+	go func(db *sql.DB, articleID int) {
+		defer wg.Done()
+		commentMutex.Lock()
+		commentList, commentErr = repositories.SelectCommentList(db, articleID)
+		commentMutex.Unlock()
+	}(s.db, articleID)
+
+	wg.Wait()
+
+	if articleErr != nil {
+		if errors.Is(articleErr, sql.ErrNoRows) {
+			return nil, apperrors.NotFound.Wrap(articleErr, "there is no target article")
 		}
 
-		return nil, apperrors.FailedToSelect.Wrap(err, "failed to get article detail")
+		return nil, apperrors.FailedToSelect.Wrap(articleErr, "failed to get article detail")
 	}
 
-	commentList, err := repositories.SelectCommentList(s.db, articleID)
-	if err != nil {
+	if commentErr != nil {
 		// if no comments, just return article
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(commentErr, sql.ErrNoRows) {
 			return article, nil
 		}
 
-		return nil, err
+		return nil, apperrors.FailedToSelect.Wrap(commentErr, "failed to get comment list")
 	}
 
 	article.CommentList = append(article.CommentList, commentList...)
