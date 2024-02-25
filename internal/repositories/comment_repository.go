@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/exaream/go-api/models"
+	"github.com/exaream/go-api/internal/models"
 )
 
 func InsertComment(db *sql.DB, comment *models.Comment) (*models.Comment, error) {

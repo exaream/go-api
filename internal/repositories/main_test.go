@@ -1,23 +1,20 @@
-package services_test
+package repositories_test
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
-	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
 
-	"github.com/exaream/go-api/database"
-	"github.com/exaream/go-api/services"
+	"github.com/exaream/go-api/internal/database"
 )
 
 const envPrefix = "TEST_"
 
 var testDB *sql.DB
-var articleService *services.AppService
 
 func TestMain(m *testing.M) {
 	var err error
@@ -26,16 +23,11 @@ func TestMain(m *testing.M) {
 		log.Fatalln(fmt.Errorf("failed to setup test: %w", err))
 	}
 
-	opt := &slog.HandlerOptions{Level: slog.LevelDebug}
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, opt))
-	articleService = services.NewAppService(logger, testDB)
-
 	m.Run()
 
 	if err := teardown(testDB); err != nil {
 		log.Fatalln(fmt.Errorf("failed to teardown test: %w", err))
 	}
-
 }
 
 func setup() (*sql.DB, error) {

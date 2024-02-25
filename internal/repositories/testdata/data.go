@@ -1,6 +1,6 @@
 package testdata
 
-import "github.com/exaream/go-api/models"
+import "github.com/exaream/go-api/internal/models"
 
 var ArticleList = []*models.Article{
 	&models.Article{

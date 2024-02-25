@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/exaream/go-api/api"
-	"github.com/exaream/go-api/database"
+	"github.com/exaream/go-api/internal/api"
+	"github.com/exaream/go-api/internal/database"
 )
 
 func main() {
