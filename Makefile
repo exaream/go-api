@@ -12,7 +12,7 @@ down: ## stop server
 
 .PHONY: run
 run: ## start api server
-	go run cmd/api/main.go
+	go run cmd/api/main.go -env=.env
 
 .PHONY: test
 test: ## run test

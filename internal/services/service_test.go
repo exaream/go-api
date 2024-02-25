@@ -12,9 +12,11 @@ import (
 
 	"github.com/exaream/go-api/internal/database"
 	"github.com/exaream/go-api/internal/services"
+	"github.com/joho/godotenv"
 )
 
 const (
+	dotenvPath  = "../../.env"
 	envPrefix   = "TEST_"
 	sqlDir      = "../../_develop/mysql/sql"
 	testdataDir = "./testdata"
@@ -43,6 +45,10 @@ func TestMain(m *testing.M) {
 }
 
 func setup() (*sql.DB, error) {
+	if err := godotenv.Load(dotenvPath); err != nil {
+		return nil, err
+	}
+
 	db, err := database.Connect("mysql", envPrefix)
 	if err != nil {
 		return nil, err
