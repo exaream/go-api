@@ -21,7 +21,7 @@ services:
     expose:
       - ${DB_PORT}
     volumes:
-      - ./_develop/mysql/data:/var/lib/mysql
+      - ../mysql/data:/var/lib/mysql
 
   mysql-test:
     image: mysql:8.3
@@ -44,4 +44,4 @@ services:
     expose:
       - ${TEST_DB_PORT}
     volumes:
-      - ./_develop/mysql/data-test:/var/lib/mysql
+      - ../mysql/data-test:/var/lib/mysql
