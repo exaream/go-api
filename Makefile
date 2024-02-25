@@ -4,13 +4,11 @@ MAKEFILE_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 .PHONY: up
 up: ## start server
-	@docker compose up --build -d
-	mysql-setup
-	mysql-test-setup
+	@docker compose -f ./_develop/docker/docker-compose.yml up --build -d
 
 .PHONY: down
 down: ## stop server
-	@docker compose down
+	@docker compose -f ./_develop/docker/docker-compose.yml down
 
 .PHONY: run
 run: ## start api server
@@ -24,31 +22,31 @@ test: ## run test
 ps : ## show container status
 	@docker container ps -a
 
-.PHONY: mysql-setup
-mysql-setup: ## set up mysql
+.PHONY: db-setup
+db-setup: ## set up DB
 	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
 	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
-.PHONY: mysql-cleanup
-mysql-cleanup: ## clean up mysql
+.PHONY: db-cleanup
+db-cleanup: ## clean up DB
 	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
-.PHONY: mysql-login
-mysql-login: ## login to mysql
+.PHONY: db-login
+db-login: ## login to DB
 	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS}
 
 
-.PHONY: mysql-test-setup
-mysql-test-setup: ## set up mysql
+.PHONY: db-test-setup
+db-test-setup: ## set up DB
 	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
 	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
-.PHONY: mysql-test-cleanup
-mysql-test-cleanup: ## clean up mysql
+.PHONY: db-test-cleanup
+db-test-cleanup: ## clean up DB
 	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
-.PHONY: mysql-test-login
-mysql-test-login: ## login to mysql
+.PHONY: db-test-login
+db-test-login: ## login to db
 	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS}
 
 .PHONY: vuln
