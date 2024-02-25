@@ -12,7 +12,11 @@ import (
 	"github.com/exaream/go-api/internal/database"
 )
 
-const envPrefix = "TEST_"
+const (
+	envPrefix   = "TEST_"
+	sqlDir      = "../../_develop/mysql/sql"
+	testdataDir = "./testdata"
+)
 
 var testDB *sql.DB
 
@@ -36,11 +40,15 @@ func setup() (*sql.DB, error) {
 		return nil, err
 	}
 
-	if err := runSQL("cleanup_db"); err != nil {
+	if err := runSQL(sqlDir + "/drop_tables.sql"); err != nil {
 		return nil, err
 	}
 
-	if err := runSQL("setup_db"); err != nil {
+	if err := runSQL(sqlDir + "/create_tables.sql"); err != nil {
+		return nil, err
+	}
+
+	if err := runSQL(testdataDir + "/insert_into_tables.sql"); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +56,7 @@ func setup() (*sql.DB, error) {
 }
 
 func teardown(db *sql.DB) error {
-	if err := runSQL("cleanup_db"); err != nil {
+	if err := runSQL(sqlDir + "/drop_tables.sql"); err != nil {
 		return err
 	}
 
@@ -57,16 +65,17 @@ func teardown(db *sql.DB) error {
 	return nil
 }
 
-func runSQL(name string) error {
+func runSQL(filename string) error {
+	filename = filepath.Clean(filename)
+	absPath, err := filepath.Abs(filename)
+	if err != nil {
+		return err
+	}
+
 	host := os.Getenv(envPrefix + "DB_HOST")
 	user := os.Getenv(envPrefix + "DB_USER")
 	dbName := os.Getenv(envPrefix + "DB_NAME")
 	password := os.Getenv(envPrefix + "DB_PASS")
-
-	absPath, err := filepath.Abs("./testdata/" + name + ".sql")
-	if err != nil {
-		return err
-	}
 
 	_, err = os.Stat(absPath)
 	if os.IsNotExist(err) {

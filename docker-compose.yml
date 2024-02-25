@@ -14,9 +14,9 @@ services:
         MYSQL_USER: ${DB_USER}
         MYSQL_PASSWORD: ${DB_PASS}
         TZ: ${DB_TIMEZONE}
-        LAND: ${DB_LAND}
+        LAND: ${DB_LANG}
     platform: linux/x86_64
     ports: 
         - "3306:3306"
     volumes:
-        - ./_development/mysql/data:/var/lib/mysql
+        - ./_develop/mysql/data:/var/lib/mysql
