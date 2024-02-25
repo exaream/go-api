@@ -84,13 +84,14 @@ func runSQL(filename string) error {
 	user := os.Getenv(envPrefix + "DB_USER")
 	dbName := os.Getenv(envPrefix + "DB_NAME")
 	password := os.Getenv(envPrefix + "DB_PASS")
+	port := os.Getenv(envPrefix + "DB_PORT")
 
 	_, err = os.Stat(absPath)
 	if os.IsNotExist(err) {
 		return err
 	}
 
-	cmd := exec.Command("mysql", "-h", host, "-u", user, dbName, "--password="+password, "-e", "source "+absPath)
+	cmd := exec.Command("mysql", "-h", host, "-u", user, "-P", port, dbName, "--password="+password, "-e", "source "+absPath)
 
 	return cmd.Run()
 }

@@ -21,6 +21,8 @@
 go.work
 
 .env
-_develop/*
+_develop/mysql/data
 !_develop/mysql/data/.gitkeep
+_develop/mysql/data-test
+!_develop/mysql/data-test/.gitkeep
 TODO.md

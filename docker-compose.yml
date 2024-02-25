@@ -1,22 +1,47 @@
-version: '3'
+version: "3"
 services:
-
   mysql:
     image: mysql:8.3
-    container_name: mysql-go-api
-    command: 
-        - --character-set-server=utf8mb4
-        - --collation-server=utf8mb4_unicode_ci
+    container_name: go-api-sample-mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     environment:
-        MYSQL_ROOT_USER: ${DB_ROOT_USER}
-        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
-        MYSQL_DATABASE: ${DB_NAME}
-        MYSQL_USER: ${DB_USER}
-        MYSQL_PASSWORD: ${DB_PASS}
-        TZ: ${DB_TIMEZONE}
-        LAND: ${DB_LANG}
+      MYSQL_ROOT_USER: ${DB_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_TCP_PORT: ${DB_PORT}
+      TZ: ${DB_TIMEZONE}
+      LAND: ${DB_LANG}
     platform: linux/x86_64
-    ports: 
-        - "3306:3306"
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    expose:
+      - ${DB_PORT}
     volumes:
-        - ./_develop/mysql/data:/var/lib/mysql
+      - ./_develop/mysql/data:/var/lib/mysql
+
+  mysql-test:
+    image: mysql:8.3
+    container_name: go-api-sample-mysql-test
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_USER: ${TEST_DB_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${TEST_DB_ROOT_PASS}
+      MYSQL_DATABASE: ${TEST_DB_NAME}
+      MYSQL_USER: ${TEST_DB_USER}
+      MYSQL_PASSWORD: ${TEST_DB_PASS}
+      MYSQL_TCP_PORT: ${TEST_DB_PORT}
+      TZ: ${TEST_DB_TIMEZONE}
+      LAND: ${TEST_DB_LANG}
+    platform: linux/x86_64
+    ports:
+      - ${TEST_DB_PORT}:${TEST_DB_PORT}
+    expose:
+      - ${TEST_DB_PORT}
+    volumes:
+      - ./_develop/mysql/data-test:/var/lib/mysql
