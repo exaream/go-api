@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/exaream/go-api/controllers"
-	"github.com/exaream/go-api/controllers/testdata"
+	"github.com/exaream/go-api/internal/controllers"
+	"github.com/exaream/go-api/internal/controllers/testdata"
 )
 
 var articleCtrl *controllers.ArticleController
