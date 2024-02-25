@@ -1,4 +1,4 @@
-package api
+package router
 
 import (
 	"context"
@@ -6,17 +6,17 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/exaream/go-api/internal/api/middlewares"
 	"github.com/exaream/go-api/internal/controllers"
+	"github.com/exaream/go-api/internal/middlewares"
 	"github.com/exaream/go-api/internal/services"
 )
 
-func NewRouter(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {
+func NewHandler(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {
 	srv := services.NewAppService(logger, db)
 	articleCtrl := controllers.NewArticleController(ctx, logger, srv)
 	commentCtrl := controllers.NewCommentController(ctx, logger, srv)
 	middleware := middlewares.NewMiddleware(logger)
-	middlewareList := []func(*slog.Logger, http.HandlerFunc) http.HandlerFunc{middlewares.LoggingMiddleware}
+	middlewareList := []func(*slog.Logger, http.HandlerFunc) http.HandlerFunc{middlewares.Logging}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /article/list", middleware.Apply(articleCtrl.ListArticle, middlewareList))

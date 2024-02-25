@@ -35,7 +35,7 @@ func SelectArticleList(db *sql.DB, page int) ([]*models.Article, error) {
 	const query = `
 		SELECT id, title, body, user_name, nice_num, created_at, updated_at
 		FROM articles
-		ORDER BY created_at DESC
+		ORDER BY id
 		LIMIT ? OFFSET ?;
 	`
 
