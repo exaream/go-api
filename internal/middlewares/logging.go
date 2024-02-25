@@ -19,7 +19,7 @@ func (rlw *responseLoggingWriter) WriteHeader(code int) {
 	rlw.ResponseWriter.WriteHeader(code)
 }
 
-func LoggingMiddleware(logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
+func Logging(logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		traceID := NewTraceID()
 		ctx := SetTraceID(r.Context(), traceID)

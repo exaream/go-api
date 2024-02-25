@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/exaream/go-api/internal/api"
 	"github.com/exaream/go-api/internal/database"
+	"github.com/exaream/go-api/internal/router"
 )
 
 func main() {
@@ -23,8 +23,8 @@ func main() {
 
 	logger.InfoContext(ctx, "starting server")
 
-	router := api.NewRouter(ctx, logger, db)
-	if err := http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), router); err != nil {
+	handler := router.NewHandler(ctx, logger, db)
+	if err := http.ListenAndServe(":"+os.Getenv("HTTP_PORT"), handler); err != nil {
 		logger.ErrorContext(ctx, err.Error())
 		os.Exit(1)
 	}
