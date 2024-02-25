@@ -3,9 +3,9 @@ package repositories_test
 import (
 	"testing"
 
-	"github.com/exaream/go-api/models"
-	"github.com/exaream/go-api/repositories"
-	"github.com/exaream/go-api/repositories/testdata"
+	"github.com/exaream/go-api/internal/models"
+	"github.com/exaream/go-api/internal/repositories"
+	"github.com/exaream/go-api/internal/repositories/testdata"
 )
 
 func TestInsertArticle(t *testing.T) {

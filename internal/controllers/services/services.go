@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/exaream/go-api/models"
+	"github.com/exaream/go-api/internal/models"
 )
 
 type ArticleServicer interface {

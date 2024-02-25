@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/exaream/go-api/apperrors"
-	"github.com/exaream/go-api/controllers/services"
-	"github.com/exaream/go-api/models"
+	"github.com/exaream/go-api/internal/apperrors"
+	"github.com/exaream/go-api/internal/controllers/services"
+	"github.com/exaream/go-api/internal/models"
 )
 
 type ArticleController struct {

@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/exaream/go-api/api/middlewares"
+	"github.com/exaream/go-api/internal/api/middlewares"
 )
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, logger *slog.Logger, err error) {

@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/exaream/go-api/api/middlewares"
-	"github.com/exaream/go-api/controllers"
-	"github.com/exaream/go-api/services"
+	"github.com/exaream/go-api/internal/api/middlewares"
+	"github.com/exaream/go-api/internal/controllers"
+	"github.com/exaream/go-api/internal/services"
 )
 
 func NewRouter(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {

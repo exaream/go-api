@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/exaream/go-api/apperrors"
-	"github.com/exaream/go-api/models"
-	"github.com/exaream/go-api/repositories"
+	"github.com/exaream/go-api/internal/apperrors"
+	"github.com/exaream/go-api/internal/models"
+	"github.com/exaream/go-api/internal/repositories"
 )
 
 func (s *AppService) PostComment(comment *models.Comment) (*models.Comment, error) {
