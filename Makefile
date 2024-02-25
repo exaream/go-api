@@ -1,6 +1,7 @@
 SHELL := /bin/sh
 .DEFAULT_GOAL := up
 MAKEFILE_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+include .env
 
 .PHONY: up
 up: ## start server
