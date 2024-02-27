@@ -7,6 +7,8 @@ type ErrCode string
 const (
 	Unknown ErrCode = "U000"
 
+	FailedToEncodeJSON ErrCode = "I001"
+
 	FailedToInsert   ErrCode = "S001"
 	FailedToSelect   ErrCode = "S002"
 	FailedToUpdate   ErrCode = "S003"

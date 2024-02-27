@@ -33,7 +33,7 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, logger *slog.Logger, e
 	if err := json.NewEncoder(w).Encode(appErr); err != nil {
 		logger.ErrorContext(ctx, "error occurred",
 			slog.Any("trace_id", traceID),
-			slog.String("code", Unknown.String()),
+			slog.String("code", FailedToEncodeJSON.String()),
 			slog.String("message", "failed to write response"),
 			slog.String("error", err.Error()))
 	}
