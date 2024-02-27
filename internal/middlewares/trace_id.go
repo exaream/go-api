@@ -2,36 +2,25 @@ package middlewares
 
 import (
 	"context"
-	"sync"
-)
 
-var (
-	mu         sync.Mutex
-	internalID int = 1
+	"github.com/google/uuid"
 )
 
 type traceIDKey struct{}
 
-func NewTraceID() int {
-	var traceID int
-
-	mu.Lock()
-	traceID = internalID
-	internalID++
-	mu.Unlock()
-
-	return traceID
+func NewTraceID() uuid.UUID {
+	return uuid.Must(uuid.NewV7())
 }
 
-func SetTraceID(ctx context.Context, traceID int) context.Context {
+func SetTraceID(ctx context.Context, traceID uuid.UUID) context.Context {
 	return context.WithValue(ctx, traceIDKey{}, traceID)
 }
 
-func GetTraceID(ctx context.Context) int {
+func GetTraceID(ctx context.Context) uuid.UUID {
 	v := ctx.Value(traceIDKey{})
-	if id, ok := v.(int); ok {
+	if id, ok := v.(uuid.UUID); ok {
 		return id
 	}
 
-	return 0
+	return uuid.Nil
 }

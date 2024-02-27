@@ -26,12 +26,12 @@ func Logging(logger *slog.Logger, next http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(ctx)
 
 		logger.InfoContext(ctx, "starting process",
-			slog.Int("trace_id", traceID), slog.String("http_method", r.Method), slog.String("request_uri", r.RequestURI))
+			slog.Any("trace_id", traceID), slog.String("http_method", r.Method), slog.String("request_uri", r.RequestURI))
 
 		rlw := NewResponseLoggingWriter(w)
 		next(rlw, r)
 
 		logger.InfoContext(ctx, "ending process",
-			slog.Int("trace_id", traceID), slog.Int("http_status_code", rlw.code))
+			slog.Any("trace_id", traceID), slog.Int("http_status_code", rlw.code))
 	}
 }

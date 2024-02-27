@@ -23,7 +23,7 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, logger *slog.Logger, e
 
 	traceID := middlewares.GetTraceID(ctx)
 	logger.ErrorContext(ctx, "error occurred",
-		slog.Int("trace_id", traceID),
+		slog.Any("trace_id", traceID),
 		slog.String("code", appErr.ErrCode.String()),
 		slog.String("message", appErr.Message),
 		slog.String("error", appErr.Error()))
