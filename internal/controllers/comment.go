@@ -39,5 +39,8 @@ func (c *CommentController) PostComment(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	json.NewEncoder(w).Encode(comment)
+	if err := json.NewEncoder(w).Encode(comment); err != nil {
+		apperrors.ErrorHandler(w, r, c.logger, err)
+		return
+	}
 }

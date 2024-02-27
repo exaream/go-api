@@ -42,7 +42,10 @@ func (c *ArticleController) ListArticle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	json.NewEncoder(w).Encode(articleList)
+	if err := json.NewEncoder(w).Encode(articleList); err != nil {
+		apperrors.ErrorHandler(w, r, c.logger, err)
+		return
+	}
 }
 
 func getPage(r *http.Request) (int, error) {
@@ -75,7 +78,10 @@ func (c *ArticleController) GetArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(article)
+	if err := json.NewEncoder(w).Encode(article); err != nil {
+		apperrors.ErrorHandler(w, r, c.logger, err)
+		return
+	}
 }
 
 func (c *ArticleController) PostArticle(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +99,10 @@ func (c *ArticleController) PostArticle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	json.NewEncoder(w).Encode(article)
+	if err := json.NewEncoder(w).Encode(article); err != nil {
+		apperrors.ErrorHandler(w, r, c.logger, err)
+		return
+	}
 }
 
 func (c *ArticleController) PostNice(w http.ResponseWriter, r *http.Request) {
@@ -110,5 +119,8 @@ func (c *ArticleController) PostNice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(article)
+	if err := json.NewEncoder(w).Encode(article); err != nil {
+		apperrors.ErrorHandler(w, r, c.logger, err)
+		return
+	}
 }

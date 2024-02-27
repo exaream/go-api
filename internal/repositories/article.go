@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/exaream/go-api/internal/models"
@@ -109,8 +110,8 @@ func UpdateNiceNum(db *sql.DB, id int) (*models.Article, error) {
 
 	row := tx.QueryRow(querySelect, id)
 	if err := row.Err(); err != nil {
-		tx.Rollback()
-		return nil, err
+		rerr := tx.Rollback()
+		return nil, errors.Join(err, rerr)
 	}
 
 	var (
@@ -132,8 +133,8 @@ func UpdateNiceNum(db *sql.DB, id int) (*models.Article, error) {
 	article.NiceNum = article.NiceNum + 1
 	_, err = tx.Exec(queryUpdate, article.NiceNum, article.UpdatedAt, id)
 	if err != nil {
-		tx.Rollback()
-		return nil, err
+		rerr := tx.Rollback()
+		return nil, errors.Join(err, rerr)
 	}
 
 	if err := tx.Commit(); err != nil {
