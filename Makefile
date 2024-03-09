@@ -1,7 +1,9 @@
 SHELL := /bin/sh
 .DEFAULT_GOAL := up
 MAKEFILE_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
 include .env
+export
 
 .PHONY: up
 up: ## start server
@@ -25,30 +27,30 @@ ps : ## show container status
 
 .PHONY: db-setup
 db-setup: ## set up DB
-	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
-	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
 .PHONY: db-cleanup
 db-cleanup: ## clean up DB
-	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
 .PHONY: db-login
 db-login: ## login to DB
-	@mysql -h $${DB_HOST} -u $${DB_USER} -P $${DB_PORT} $${DB_NAME} --password=$${DB_PASS}
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS}
 
 
 .PHONY: db-test-setup
 db-test-setup: ## set up DB
-	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
-	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
 .PHONY: db-test-cleanup
 db-test-cleanup: ## clean up DB
-	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
 .PHONY: db-test-login
 db-test-login: ## login to db
-	@mysql -h $${TEST_DB_HOST} -u $${TEST_DB_USER} -P $${TEST_DB_PORT} $${TEST_DB_NAME} --password=$${TEST_DB_PASS}
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS}
 
 .PHONY: vuln
 vuln: ## check vulnerability
@@ -56,5 +58,5 @@ vuln: ## check vulnerability
 
 .PHONY: help
 help: ## print help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $1, $2}'
