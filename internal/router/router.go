@@ -18,12 +18,14 @@ func NewHandler(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.Serv
 	middleware := middlewares.NewMiddleware(logger)
 	middlewareList := []func(*slog.Logger, http.HandlerFunc) http.HandlerFunc{middlewares.Logging}
 
+	// If you want to use both URLs with and without a trailing slash,
+	// please make sure to set a slash at the end of the URL.
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /article/list", middleware.Apply(articleCtrl.ListArticle, middlewareList))
-	mux.HandleFunc("GET /article/{id}", middleware.Apply(articleCtrl.GetArticle, middlewareList))
-	mux.HandleFunc("POST /article", middleware.Apply(articleCtrl.PostArticle, middlewareList))
-	mux.HandleFunc("POST /article/nice", middleware.Apply(articleCtrl.PostNice, middlewareList))
-	mux.HandleFunc("POST /comment", middleware.Apply(commentCtrl.PostComment, middlewareList))
+	mux.Handle("GET /article/list/{$}", middleware.Chain(articleCtrl.ListArticle, middlewareList))
+	mux.Handle("GET /article/{id}/{$}", middleware.Chain(articleCtrl.GetArticle, middlewareList))
+	mux.Handle("POST /article/{$}", middleware.Chain(articleCtrl.PostArticle, middlewareList))
+	mux.Handle("POST /article/nice/{$}", middleware.Chain(articleCtrl.PostNice, middlewareList))
+	mux.Handle("POST /comment/{$}", middleware.Chain(commentCtrl.PostComment, middlewareList))
 
 	return mux
 }
