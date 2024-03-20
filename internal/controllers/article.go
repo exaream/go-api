@@ -27,7 +27,7 @@ func NewArticleController(ctx context.Context, logger *slog.Logger, service serv
 	}
 }
 
-func (c *ArticleController) ListArticle(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) List(w http.ResponseWriter, r *http.Request) {
 	page, err := getPage(r)
 	if err != nil {
 		err = apperrors.BadParam.Wrap(err, "page must be number")
@@ -35,7 +35,7 @@ func (c *ArticleController) ListArticle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	articleList, err := c.service.ListArticle(page)
+	articleList, err := c.service.List(page)
 	if err != nil {
 		c.logger.ErrorContext(c.ctx, "GetList", slog.Int("page", page))
 		apperrors.ErrorHandler(w, r, c.logger, err)
@@ -57,7 +57,7 @@ func getPage(r *http.Request) (int, error) {
 	return strconv.Atoi(tmp[0])
 }
 
-func (c *ArticleController) GetArticle(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) GetByID(w http.ResponseWriter, r *http.Request) {
 	tmpID := r.PathValue("id")
 	if !regexp.MustCompile(`\d+`).MatchString(tmpID) {
 		err := apperrors.BadParam.Wrap(nil, "id must be number")
@@ -72,7 +72,7 @@ func (c *ArticleController) GetArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	article, err := c.service.GetArticle(id)
+	article, err := c.service.GetByID(id)
 	if err != nil {
 		apperrors.ErrorHandler(w, r, c.logger, err)
 		return
@@ -84,7 +84,7 @@ func (c *ArticleController) GetArticle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (c *ArticleController) PostArticle(w http.ResponseWriter, r *http.Request) {
+func (c *ArticleController) Post(w http.ResponseWriter, r *http.Request) {
 	var reqArticle *models.Article
 	err := json.NewDecoder(r.Body).Decode(&reqArticle)
 	if err != nil {
@@ -93,7 +93,7 @@ func (c *ArticleController) PostArticle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	article, err := c.service.PostArticle(reqArticle)
+	article, err := c.service.Post(reqArticle)
 	if err != nil {
 		apperrors.ErrorHandler(w, r, c.logger, err)
 		return

@@ -5,12 +5,12 @@ import (
 )
 
 type ArticleServicer interface {
-	ListArticle(page int) ([]*models.Article, error)
-	GetArticle(id int) (*models.Article, error)
-	PostArticle(article *models.Article) (*models.Article, error)
+	List(page int) ([]*models.Article, error)
+	GetByID(id int) (*models.Article, error)
+	Post(article *models.Article) (*models.Article, error)
 	PostNice(article *models.Article) (*models.Article, error)
 }
 
 type CommentServicer interface {
-	PostComment(comment *models.Comment) (*models.Comment, error)
+	Post(comment *models.Comment) (*models.Comment, error)
 }

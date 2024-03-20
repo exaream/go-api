@@ -40,7 +40,7 @@ db-login: ## login to DB
 
 
 .PHONY: db-test-setup
-db-test-setup: ## set up DB
+db-test-setup: db-test-cleanup ## set up DB
 	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
 	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 

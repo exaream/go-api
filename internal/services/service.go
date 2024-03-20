@@ -5,13 +5,25 @@ import (
 	"log/slog"
 )
 
-type AppService struct {
+type ArticleService struct {
 	logger *slog.Logger
 	db     *sql.DB
 }
 
-func NewAppService(logger *slog.Logger, db *sql.DB) *AppService {
-	return &AppService{
+func NewArticleService(logger *slog.Logger, db *sql.DB) *ArticleService {
+	return &ArticleService{
+		logger: logger,
+		db:     db,
+	}
+}
+
+type CommentService struct {
+	logger *slog.Logger
+	db     *sql.DB
+}
+
+func NewCommentService(logger *slog.Logger, db *sql.DB) *CommentService {
+	return &CommentService{
 		logger: logger,
 		db:     db,
 	}

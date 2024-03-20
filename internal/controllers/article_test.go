@@ -26,7 +26,7 @@ func TestListArticle(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, url, nil)
 			res := httptest.NewRecorder()
 
-			articleCtrl.ListArticle(res, req)
+			articleCtrl.List(res, req)
 
 			if res.Code != tt.code {
 				t.Errorf("code, got: %d, want: %d", res.Code, tt.code)
