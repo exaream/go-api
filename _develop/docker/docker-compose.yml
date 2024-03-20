@@ -8,13 +8,13 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_USER: ${DB_ROOT_USER}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_TCP_PORT: ${DB_PORT}
       TZ: ${DB_TIMEZONE}
-      LAND: ${DB_LANG}
+      LANG: ${DB_LANGUAGE}
     platform: linux/x86_64
     ports:
       - ${DB_PORT}:${DB_PORT}
@@ -31,13 +31,13 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_USER: ${TEST_DB_ROOT_USER}
-      MYSQL_ROOT_PASSWORD: ${TEST_DB_ROOT_PASS}
+      MYSQL_ROOT_PASSWORD: ${TEST_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${TEST_DB_NAME}
       MYSQL_USER: ${TEST_DB_USER}
-      MYSQL_PASSWORD: ${TEST_DB_PASS}
+      MYSQL_PASSWORD: ${TEST_DB_PASSWORD}
       MYSQL_TCP_PORT: ${TEST_DB_PORT}
       TZ: ${TEST_DB_TIMEZONE}
-      LAND: ${TEST_DB_LANG}
+      LANG: ${TEST_DB_LANGUAGE}
     platform: linux/x86_64
     ports:
       - ${TEST_DB_PORT}:${TEST_DB_PORT}
