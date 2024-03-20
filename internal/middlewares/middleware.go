@@ -15,12 +15,12 @@ func NewMiddleware(logger *slog.Logger) *Middleware {
 	}
 }
 
-func (m *Middleware) Apply(
+func (m *Middleware) Chain(
 	handler http.HandlerFunc,
 	middlewareList []func(*slog.Logger, http.HandlerFunc) http.HandlerFunc,
 ) http.HandlerFunc {
-	for _, middleware := range middlewareList {
-		handler = middleware(m.logger, handler)
+	for i := range middlewareList {
+		handler = middlewareList[len(middlewareList)-1-i](m.logger, handler)
 	}
 
 	return handler

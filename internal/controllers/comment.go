@@ -25,7 +25,7 @@ func NewCommentController(ctx context.Context, logger *slog.Logger, service serv
 	}
 }
 
-func (c *CommentController) PostComment(w http.ResponseWriter, r *http.Request) {
+func (c *CommentController) Post(w http.ResponseWriter, r *http.Request) {
 	var reqComment *models.Comment
 	if err := json.NewDecoder(r.Body).Decode(&reqComment); err != nil {
 		err = apperrors.FailedToDecodeReq.Wrap(err, "failed to decode request body")
@@ -33,7 +33,7 @@ func (c *CommentController) PostComment(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	comment, err := c.service.PostComment(reqComment)
+	comment, err := c.service.Post(reqComment)
 	if err != nil {
 		apperrors.ErrorHandler(w, r, c.logger, err)
 		return

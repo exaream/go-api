@@ -23,7 +23,7 @@ const (
 )
 
 var testDB *sql.DB
-var articleService *services.AppService
+var articleService *services.ArticleService
 
 func TestMain(m *testing.M) {
 	var err error
@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 
 	opt := &slog.HandlerOptions{Level: slog.LevelDebug}
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, opt))
-	articleService = services.NewAppService(logger, testDB)
+	articleService = services.NewArticleService(logger, testDB)
 
 	m.Run()
 

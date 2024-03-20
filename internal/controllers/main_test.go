@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, opt))
 	ctx := context.Background()
 
-	srv := testdata.NewServiceMock()
+	srv := testdata.NewArticleServiceMock()
 	articleCtrl = controllers.NewArticleController(ctx, logger, srv)
 
 	m.Run()

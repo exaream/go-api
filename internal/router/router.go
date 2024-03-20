@@ -12,18 +12,23 @@ import (
 )
 
 func NewHandler(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {
-	srv := services.NewAppService(logger, db)
-	articleCtrl := controllers.NewArticleController(ctx, logger, srv)
-	commentCtrl := controllers.NewCommentController(ctx, logger, srv)
+	articleSrv := services.NewArticleService(logger, db)
+	commentSrv := services.NewCommentService(logger, db)
+
+	articleCtrl := controllers.NewArticleController(ctx, logger, articleSrv)
+	commentCtrl := controllers.NewCommentController(ctx, logger, commentSrv)
+
 	middleware := middlewares.NewMiddleware(logger)
 	middlewareList := []func(*slog.Logger, http.HandlerFunc) http.HandlerFunc{middlewares.Logging}
 
+	// If you want to use both URLs with and without a trailing slash,
+	// please make sure to set a slash at the end of the URL.
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /article/list", middleware.Apply(articleCtrl.ListArticle, middlewareList))
-	mux.HandleFunc("GET /article/{id}", middleware.Apply(articleCtrl.GetArticle, middlewareList))
-	mux.HandleFunc("POST /article", middleware.Apply(articleCtrl.PostArticle, middlewareList))
-	mux.HandleFunc("POST /article/nice", middleware.Apply(articleCtrl.PostNice, middlewareList))
-	mux.HandleFunc("POST /comment", middleware.Apply(commentCtrl.PostComment, middlewareList))
+	mux.Handle("GET /article/list/{$}", middleware.Chain(articleCtrl.List, middlewareList))
+	mux.Handle("GET /article/{id}/{$}", middleware.Chain(articleCtrl.GetByID, middlewareList))
+	mux.Handle("POST /article/{$}", middleware.Chain(articleCtrl.Post, middlewareList))
+	mux.Handle("POST /article/nice/{$}", middleware.Chain(articleCtrl.PostNice, middlewareList))
+	mux.Handle("POST /comment/{$}", middleware.Chain(commentCtrl.Post, middlewareList))
 
 	return mux
 }

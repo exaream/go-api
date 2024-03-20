@@ -22,11 +22,11 @@ func TestListArticle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			url := fmt.Sprintf("http://localhost:8080/article/list?page=%s", tt.query)
+			url := fmt.Sprintf("http://localhost:8080/article/list/?page=%s", tt.query)
 			req := httptest.NewRequest(http.MethodGet, url, nil)
 			res := httptest.NewRecorder()
 
-			articleCtrl.ListArticle(res, req)
+			articleCtrl.List(res, req)
 
 			if res.Code != tt.code {
 				t.Errorf("code, got: %d, want: %d", res.Code, tt.code)

@@ -7,7 +7,7 @@ func BenchmarkGetArticle(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := articleService.GetArticle(articleID)
+		_, err := articleService.GetByID(articleID)
 		if err != nil {
 			b.Error(err)
 			break

@@ -10,7 +10,7 @@ import (
 	"github.com/exaream/go-api/internal/repositories"
 )
 
-func (s *AppService) ListArticle(page int) ([]*models.Article, error) {
+func (s *ArticleService) List(page int) ([]*models.Article, error) {
 	list, err := repositories.SelectArticleList(s.db, page)
 	if err != nil {
 		return nil, apperrors.FailedToSelect.Wrap(err, "failed to get article list")
@@ -23,7 +23,7 @@ func (s *AppService) ListArticle(page int) ([]*models.Article, error) {
 	return list, nil
 }
 
-func (s *AppService) GetArticle(articleID int) (*models.Article, error) {
+func (s *ArticleService) GetByID(articleID int) (*models.Article, error) {
 	type articleRes struct {
 		article *models.Article
 		err     error
@@ -85,7 +85,7 @@ func (s *AppService) GetArticle(articleID int) (*models.Article, error) {
 	return article, nil
 }
 
-func (s *AppService) PostArticle(article *models.Article) (*models.Article, error) {
+func (s *ArticleService) Post(article *models.Article) (*models.Article, error) {
 	newArticle, err := repositories.InsertArticle(s.db, article)
 	if err != nil {
 		return nil, apperrors.FailedToInsert.Wrap(err, "failed to insert article")
@@ -94,7 +94,7 @@ func (s *AppService) PostArticle(article *models.Article) (*models.Article, erro
 	return newArticle, nil
 }
 
-func (s *AppService) PostNice(article *models.Article) (*models.Article, error) {
+func (s *ArticleService) PostNice(article *models.Article) (*models.Article, error) {
 	article, err := repositories.UpdateNiceNum(s.db, article.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
