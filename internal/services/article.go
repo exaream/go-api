@@ -4,11 +4,24 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/exaream/go-api/internal/apperrors"
 	"github.com/exaream/go-api/internal/models"
 	"github.com/exaream/go-api/internal/repositories"
 )
+
+type ArticleService struct {
+	logger *slog.Logger
+	db     *sql.DB
+}
+
+func NewArticleService(logger *slog.Logger, db *sql.DB) *ArticleService {
+	return &ArticleService{
+		logger: logger,
+		db:     db,
+	}
+}
 
 func (s *ArticleService) List(page int) ([]*models.Article, error) {
 	list, err := repositories.SelectArticleList(s.db, page)

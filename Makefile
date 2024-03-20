@@ -27,30 +27,30 @@ ps : ## show container status
 
 .PHONY: db-setup
 db-setup: ## set up DB
-	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
-	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
 .PHONY: db-cleanup
 db-cleanup: ## clean up DB
-	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
 .PHONY: db-login
 db-login: ## login to DB
-	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASS}
+	@mysql -h ${DB_HOST} -u ${DB_USER} -P ${DB_PORT} ${DB_NAME} --password=${DB_PASSWORD}
 
 
 .PHONY: db-test-setup
 db-test-setup: db-test-cleanup ## set up DB
-	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
-	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/create_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/insert_into_tables.sql
 
 .PHONY: db-test-cleanup
 db-test-cleanup: ## clean up DB
-	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASSWORD} < ${MAKEFILE_DIR}_develop/mysql/sql/drop_tables.sql
 
 .PHONY: db-test-login
 db-test-login: ## login to db
-	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASS}
+	@mysql -h ${TEST_DB_HOST} -u ${TEST_DB_USER} -P ${TEST_DB_PORT} ${TEST_DB_NAME} --password=${TEST_DB_PASSWORD}
 
 .PHONY: vuln
 vuln: ## check vulnerability

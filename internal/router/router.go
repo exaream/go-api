@@ -6,12 +6,13 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/exaream/go-api/internal/config"
 	"github.com/exaream/go-api/internal/controllers"
 	"github.com/exaream/go-api/internal/middlewares"
 	"github.com/exaream/go-api/internal/services"
 )
 
-func NewHandler(ctx context.Context, logger *slog.Logger, db *sql.DB) *http.ServeMux {
+func NewHandler(ctx context.Context, cfg *config.Config, logger *slog.Logger, db *sql.DB) *http.ServeMux {
 	articleSrv := services.NewArticleService(logger, db)
 	commentSrv := services.NewCommentService(logger, db)
 
